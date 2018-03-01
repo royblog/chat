@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lianluo.chatrebot">
 
+    <!-- 连接网络权限 -->
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+    <!-- 录音权限 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
 
     <application
         android:allowBackup="true"
