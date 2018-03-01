@@ -58,29 +58,25 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+
         mIatDialog = new RecognizerDialog(MainActivity.this, null);
+        //mIatDialog.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
         mIatDialog.setListener(mRListener);
-
-        button = findViewById(R.id.record);
-        tv = findViewById(R.id.text);
-
-        /*
-        try {
-            chatBBBService();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        */
     }
 
     public void beganRecord(View V) {
        Log.d("record","recording");
-       setIatParam("zph");
-       mIatDialog.show();
+        //mIatDialog.show();
+
+        //name();
 
     }
+    private  void name() {
+        Log.d("nametest", "name");
+        mIatDialog.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
+    }
 
-    private  void setIatParam(String filename) {
+    private void setIatParam(String filename) {
 
         //清空参数
         mIatDialog.setParameter(SpeechConstant.PARAMS, null);
