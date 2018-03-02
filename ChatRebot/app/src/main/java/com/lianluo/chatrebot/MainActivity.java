@@ -6,9 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
@@ -20,7 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.security.PrivateKey;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -32,51 +31,63 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SpeechRecognizer mIat;
     private RecognizerDialog mIatDialog;
-    private RecognizerDialogListener mRListener;
-    private Button button;
-    private TextView tv;
-    private  String result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
         SpeechUtility.createUtility(MainActivity.this, SpeechConstant.APPID + "=5a976cf6");
+        mIatDialog = new RecognizerDialog(MainActivity.this, mInitListener);
+        mIatDialog.setListener(mRecognizerDialogListener);
+        setParam();
 
-        mRListener = new RecognizerDialogListener() {
-            @Override
-            public void onResult(RecognizerResult recognizerResult, boolean b) {
+        if (mIatDialog == null) {
+            Log.d("initDialog", "failed");
+            return;
+        } else  {
+            Log.d("initDialog", "success");
+        }
+        */
 
+        try {
+            chatBBBService();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void beganRecord(View view) {
+        mIatDialog.show();
+    }
+
+    private InitListener mInitListener = new InitListener() {
+        @Override
+        public void onInit(int i) {
+            if (i != ErrorCode.SUCCESS) {
+                Log.d("initlistener", "failed");
+            } else  {
+                Log.d("initlistener", "success");
             }
+        }
+    };
 
-            @Override
-            public void onError(SpeechError speechError) {
+    private  RecognizerDialogListener mRecognizerDialogListener = new RecognizerDialogListener() {
+        @Override
+        public void onResult(RecognizerResult recognizerResult, boolean b) {
+            Log.d("result","success");
+        }
 
-            }
-        };
+        @Override
+        public void onError(SpeechError speechError) {
+            Log.d("result", "error");
 
+        }
+    };
 
-        mIatDialog = new RecognizerDialog(MainActivity.this, null);
-        //mIatDialog.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
-        mIatDialog.setListener(mRListener);
-    }
-
-    public void beganRecord(View V) {
-       Log.d("record","recording");
-        //mIatDialog.show();
-
-        //name();
-
-    }
-    private  void name() {
-        Log.d("nametest", "name");
-        mIatDialog.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
-    }
-
-    private void setIatParam(String filename) {
+    private void setParam() {
 
         //清空参数
         mIatDialog.setParameter(SpeechConstant.PARAMS, null);
@@ -106,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         mIatDialog.setParameter(SpeechConstant.AUDIO_FORMAT, "Wav");
 
         //设置音频保存路径，设置路径为sd卡，注意设置权限
-        mIatDialog.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory() + "/CharRebot/" + filename + ".wav");
+        mIatDialog.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory()  + "/msc/iat.wav");
     }
 
     public void authService() {
@@ -158,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d("errorlog",e.toString());
+
+
             }
 
             @Override
@@ -166,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }
 
 
