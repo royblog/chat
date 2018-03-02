@@ -7,18 +7,18 @@ import java.util.List;
  */
 
 public class ChatBean {
-    private int log_id;
-    private int error_code;
-    private String error_msg;
-    private ResultBean result;
+    public String log_id;
+    public String error_code;
+    public String error_msg;
+    public ResultBean result;
 
     public class ResultBean {
-        private String session_id;
-        private List<ListBean> action_list;
+        public String session_id;
+        public List<DetailBean> action_list;
 
-        public class ListBean {
-            private String action_id;
-            private String say;
+        public class DetailBean {
+            public String action_id;
+            public String say;
         }
     }
 }

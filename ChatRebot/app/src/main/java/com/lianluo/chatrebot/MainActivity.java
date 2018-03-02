@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.google.gson.Gson;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerResult;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
+
         SpeechUtility.createUtility(MainActivity.this, SpeechConstant.APPID + "=5a976cf6");
         mIatDialog = new RecognizerDialog(MainActivity.this, mInitListener);
         mIatDialog.setListener(mRecognizerDialogListener);
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         } else  {
             Log.d("initDialog", "success");
         }
-        */
+
 
         try {
             chatBBBService();
@@ -169,15 +170,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d("errorlog",e.toString());
-
-
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.d("chatlog",response.body().string());
+                parseJson(response.body().string());
             }
         });
+    }
+
+    public void parseJson(String jsonstring) {
+
+        Gson gson = new Gson();
+        ChatBean chatbean = gson.fromJson(jsonstring,ChatBean.class);
+        try {
+            Log.d("logid",chatbean.log_id);
+            Log.d("sessionid",chatbean.result.session_id);
+            Log.d("say", chatbean.result.session_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
