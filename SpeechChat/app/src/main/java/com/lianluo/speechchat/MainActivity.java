@@ -17,7 +17,6 @@ import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
 public class MainActivity extends AppCompatActivity {
-
     private RecognizerDialog mIatDialog;
     private String mEngineType = SpeechConstant.TYPE_CLOUD;
 
@@ -31,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private InitListener mInitListener = new InitListener() {
+
         @Override
         public void onInit(int code) {
             if (code != ErrorCode.SUCCESS) {
