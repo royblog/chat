@@ -48,17 +48,15 @@ public class MainActivity extends AppCompatActivity {
         if (mIatDialog == null) {
             Log.d("initDialog", "failed");
             return;
-        } else  {
+        } else {
             Log.d("initDialog", "success");
         }
 
-
-        try {
-            chatBBBService();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        ChatService chatService = new ChatService();
+        chatService.authService();
     }
+
+
 
     public void beganRecord(View view) {
         mIatDialog.show();
@@ -69,16 +67,16 @@ public class MainActivity extends AppCompatActivity {
         public void onInit(int i) {
             if (i != ErrorCode.SUCCESS) {
                 Log.d("initlistener", "failed");
-            } else  {
+            } else {
                 Log.d("initlistener", "success");
             }
         }
     };
 
-    private  RecognizerDialogListener mRecognizerDialogListener = new RecognizerDialogListener() {
+    private RecognizerDialogListener mRecognizerDialogListener = new RecognizerDialogListener() {
         @Override
         public void onResult(RecognizerResult recognizerResult, boolean b) {
-            Log.d("result","success");
+            Log.d("result", "success");
         }
 
         @Override
@@ -118,80 +116,9 @@ public class MainActivity extends AppCompatActivity {
         mIatDialog.setParameter(SpeechConstant.AUDIO_FORMAT, "Wav");
 
         //设置音频保存路径，设置路径为sd卡，注意设置权限
-        mIatDialog.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory()  + "/msc/iat.wav");
+        mIatDialog.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory() + "/msc/iat.wav");
     }
-
-    public void authService() {
-
-        String client_id = "5o14pfO8QBrI8dnGvKkjVo6l";
-        String client_secret = "YllGkqITOcSsFCZTpEzXPB7gV0F5AhCy";
-        String auth_url = "https://aip.baidubce.com/oauth/2.0/token?";
-
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request
-                .Builder()
-                .url(auth_url + "grant_type=client_credentials" + "&client_id=" + client_id + "&client_secret=" + client_secret)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                System.out.print(response.body().string());
-            }
-        });
-    }
-
-    public void chatBBBService() throws JSONException {
-
-        String access_token = "24.f6e78b670aca67e6dcbdcc2f489f7e79.2592000.1522400295.282335-10863169";
-
-        OkHttpClient client = new OkHttpClient();
-
-        MediaType JSON = MediaType.parse("application/json, charset=utf-8");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("scene_id","100");
-        jsonObject.put("query","你好");
-        String json = jsonObject.toString();
-
-        RequestBody requestBody = RequestBody.create(JSON, json);
-
-        Request request = new Request.Builder()
-                .url("https://aip.baidubce.com/rpc/2.0/solution/v1/unit_utterance?access_token=" + access_token)
-                .post(requestBody)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("errorlog",e.toString());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                parseJson(response.body().string());
-            }
-        });
-    }
-
-    public void parseJson(String jsonstring) {
-
-        Gson gson = new Gson();
-        ChatBean chatbean = gson.fromJson(jsonstring,ChatBean.class);
-        try {
-            Log.d("logid",chatbean.log_id);
-            Log.d("sessionid",chatbean.result.session_id);
-            Log.d("say", chatbean.result.session_id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }
+
 
 
