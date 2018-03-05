@@ -26,9 +26,6 @@ import okhttp3.Response;
 
 public class ChatService {
 
-    String scene_id;    //
-    String session_id;  //
-    String query;       //
 
     /**
      * 授权服务，在请求聊天前，调用授权接口，获取access_token,有效期30天，需定期更换
@@ -59,53 +56,59 @@ public class ChatService {
             public void onResponse(Call call, Response response) throws IOException {
                 Gson gson = new Gson();
                 AuthBean authBean = gson.fromJson(response.body().string(), AuthBean.class);
-                Log.d("authservice", authBean.access_token);
+                SPUtils.put(ContextApplication.getAppContext(), "access_token", authBean.access_token);
             }
         });
     }
 
     /**
-     * @param query         聊天内容
-     * @throws JSONException
+     * 聊天服务，返回数据参考：ChatBean
+     * @param query
      */
 
-    public void unitService(String query) throws JSONException {
+    public void unitService(String query) {
 
-        String access_token = "24.f6e78b670aca67e6dcbdcc2f489f7e79.2592000.1522400295.282335-10863169";
+        String access_token =  (String) SPUtils.get(ContextApplication.getAppContext(), "access_token", "");
+        if (access_token.equals("")) {
+            authService();
+            access_token = (String) SPUtils.get(ContextApplication.getAppContext(), "access_token", "");
+        }
         String unit_url = "https://aip.baidubce.com/rpc/2.0/solution/v1/unit_utterance?access_token=" + access_token;
         String scene_id = "100";
         String session_id = "";
 
-        OkHttpClient client = new OkHttpClient();
+        try {
+            OkHttpClient client = new OkHttpClient();
 
-        MediaType JSON = MediaType.parse("application/json, charset=utf-8");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("scene_id",scene_id);
-        jsonObject.put("query", query);
-        jsonObject.put("session_id", session_id);
-        String json = jsonObject.toString();
+            MediaType JSON = MediaType.parse("application/json, charset=utf-8");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("scene_id",scene_id);
+            jsonObject.put("query", query);
+            jsonObject.put("session_id", session_id);
+            String json = jsonObject.toString();
 
-        RequestBody requestBody = RequestBody.create(JSON, json);
+            RequestBody requestBody = RequestBody.create(JSON, json);
 
-        Request request = new Request.Builder()
-                .url(unit_url)
-                .post(requestBody)
-                .build();
+            Request request = new Request.Builder()
+                    .url(unit_url)
+                    .post(requestBody)
+                    .build();
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("unitservice",e.toString());
-            }
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("unitservice",e.toString());
+                }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Gson gson = new Gson();
-                ChatBean bean = gson.fromJson(response.body().string(), ChatBean.class);
-                Log.d("three", "three");
-            }
-        });
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    Gson gson = new Gson();
+                    ChatBean bean = gson.fromJson(response.body().string(), ChatBean.class);
+                    Log.d("chatsay",bean.result.action_list.get(0).say);
+                }
+            });
+        } catch (Exception e) {
 
-        Log.d("one","one");
+        }
     }
 }

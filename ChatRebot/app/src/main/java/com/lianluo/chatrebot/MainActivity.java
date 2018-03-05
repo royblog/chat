@@ -1,47 +1,37 @@
 package com.lianluo.chatrebot;
 
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.google.gson.Gson;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
 public class MainActivity extends AppCompatActivity {
 
     private RecognizerDialog mIatDialog;
-
+    private SpeechSynthesizer mTts;
+    private ChatService chatService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        SpeechUtility.createUtility(MainActivity.this, SpeechConstant.APPID + "=5a976cf6");
         mIatDialog = new RecognizerDialog(MainActivity.this, mInitListener);
+        mTts = new SpeechSynthesizer.createSynthesizer(this,mInitListener);
+
         mIatDialog.setListener(mRecognizerDialogListener);
         setParam();
 
@@ -52,11 +42,12 @@ public class MainActivity extends AppCompatActivity {
             Log.d("initDialog", "success");
         }
 
-        ChatService chatService = new ChatService();
-        chatService.authService();
+        chatService = new ChatService();
     }
 
+    public void textToSpeech() {
 
+    }
 
     public void beganRecord(View view) {
         mIatDialog.show();
@@ -77,12 +68,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onResult(RecognizerResult recognizerResult, boolean b) {
             Log.d("result", "success");
+            chatService.unitService(recognizerResult.getResultString());
         }
 
         @Override
         public void onError(SpeechError speechError) {
             Log.d("result", "error");
-
         }
     };
 
