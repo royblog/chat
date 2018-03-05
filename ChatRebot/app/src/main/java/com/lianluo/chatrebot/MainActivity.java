@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private SpeechSynthesizer mTts;
     private ChatService chatService;
     EditText editText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         editText = findViewById(R.id.edit_text);
 
-
         chatService = new ChatService();
-
     }
 
 

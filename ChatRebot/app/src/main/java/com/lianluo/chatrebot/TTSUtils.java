@@ -47,7 +47,6 @@ public class TTSUtils implements InitListener, SynthesizerListener {
         mTts.setParameter(SpeechConstant.VOLUME,"100");
         mTts.setParameter(SpeechConstant.STREAM_TYPE,"3");
         mTts.setParameter(SpeechConstant.KEY_REQUEST_FOCUS,"true");
-        mTts.setParameter(SpeechConstant.TTS_AUDIO_PATH,"./sdcard/iflytek.pcm");
     }
 
     public void speak(String msg) {
