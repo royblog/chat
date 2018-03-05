@@ -40,16 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
         editText = findViewById(R.id.edit_text);
 
-        //chatService = new ChatService();
+        chatService = new ChatService();
     }
 
 
     public void beganRecord(View view) {
         mIatDialog.show();
-
-        //Log.d("edittext:", editText.getText().toString());
-        //chatService.unitService(editText.getText().toString());
-
     }
 
     private InitListener mInitListener = new InitListener() {
@@ -68,24 +64,25 @@ public class MainActivity extends AppCompatActivity {
         public void onResult(RecognizerResult recognizerResult, boolean b) {
             Log.d("speechresult", "success" + recognizerResult.getResultString());
 
-            //chatService.unitService(recognizerResult.getResultString());
             Gson gson = new Gson();
             SpeechBean speechBean = gson.fromJson(recognizerResult.getResultString(), SpeechBean.class);
             if (speechBean.sn == 1) {
-                //Log.d("speechWord:",speechBean.ws.get(0).cw.get(0).w);
-                Log.d("speechfail","speechfail" + speechBean.sn);
-                Log.d("speechfail", "speechls" + speechBean.ls);
-                Log.d("speechfail","speechbg" + speechBean.bg);
-                Log.d("speechfail","speechws" + speechBean.ws.toArray().length);
-            } else if (speechBean.sn == 2){
-                Log.d("speechfail","speechfail" + speechBean.sn);
-            } else  {
-                Log.d("speechthree","speechthree");
+                speechBean.sentence = new StringBuffer();
+                for (int i = 0; i< speechBean.ws.size(); i ++) {
+                    speechBean.sentence = speechBean.sentence.append(speechBean.ws.get(i).cw.get(0).w);
+                }
+                Log.d("speechfail","speechcat" + speechBean.sentence);
+                chatService.unitService(speechBean.sentence.toString());
+
+            } else {
+                //
             }
+
         }
 
         @Override
         public void onError(SpeechError speechError) {
+            //没有检测到说话
             Log.d("result", "error" + speechError.toString());
         }
     };
@@ -108,13 +105,13 @@ public class MainActivity extends AppCompatActivity {
         mIatDialog.setParameter(SpeechConstant.ACCENT, "mandarin");
 
         //设置语音前端点：静音超过时间，用户多长时间不说话做出超时处理
-        mIatDialog.setParameter(SpeechConstant.VAD_BOS, "4000");
+        mIatDialog.setParameter(SpeechConstant.VAD_BOS, "5000");
 
         //设置后端点：后端检测静音检测时间，用户停止说话多长时间默认不再输入，自动停止录音
         mIatDialog.setParameter(SpeechConstant.VAD_EOS, "2000");
 
         //设置标点符号，设置0表示返回结果无标点，设置1表示返回结果有标点
-        mIatDialog.setParameter(SpeechConstant.ASR_PTT, "1");
+        mIatDialog.setParameter(SpeechConstant.ASR_PTT, "0");
 
         //设置保存格式，保存格式支持pcm，wav，
         mIatDialog.setParameter(SpeechConstant.AUDIO_FORMAT, "Wav");

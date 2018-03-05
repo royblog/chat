@@ -73,9 +73,10 @@ public class ChatService {
             authService();
             access_token = (String) SPUtils.get(ContextApplication.getAppContext(), "access_token", "");
         }
+        String session_id = (String) SPUtils.get(ContextApplication.getAppContext(),"session_id","");
+
         String unit_url = "https://aip.baidubce.com/rpc/2.0/solution/v1/unit_utterance?access_token=" + access_token;
         String scene_id = "100";
-        String session_id = "";
 
         try {
             OkHttpClient client = new OkHttpClient();
@@ -104,7 +105,7 @@ public class ChatService {
                 public void onResponse(Call call, Response response) throws IOException {
                     Gson gson = new Gson();
                     ChatBean bean = gson.fromJson(response.body().string(), ChatBean.class);
-
+                    SPUtils.put(ContextApplication.getAppContext(),"session_id",bean.result.session_id);
                     TTSUtils.getInstance().speak(bean.result.action_list.get(0).say);
                 }
             });

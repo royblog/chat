@@ -16,6 +16,7 @@ public class SpeechBean {
     public boolean ls;
     public int bg;
     public int ed;
+    public StringBuffer sentence;
     public List<WsBean> ws;
 
     public class WsBean {
