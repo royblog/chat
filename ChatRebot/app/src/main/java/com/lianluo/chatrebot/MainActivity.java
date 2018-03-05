@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mIatDialog = new RecognizerDialog(MainActivity.this, mInitListener);
-        mTts = new SpeechSynthesizer.createSynthesizer(this,mInitListener);
 
         mIatDialog.setListener(mRecognizerDialogListener);
         setParam();
@@ -43,14 +42,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         chatService = new ChatService();
-    }
-
-    public void textToSpeech() {
 
     }
+
+
 
     public void beganRecord(View view) {
-        mIatDialog.show();
+
+        //mIatDialog.show();
+        chatService.unitService("你多大了");
+
     }
 
     private InitListener mInitListener = new InitListener() {
