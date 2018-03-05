@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private RecognizerDialog mIatDialog;
     private SpeechSynthesizer mTts;
     private ChatService chatService;
+    EditText editText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,16 +43,18 @@ public class MainActivity extends AppCompatActivity {
             Log.d("initDialog", "success");
         }
 
+        editText = findViewById(R.id.edit_text);
+
+
         chatService = new ChatService();
 
     }
 
 
-
     public void beganRecord(View view) {
 
-        //mIatDialog.show();
-        chatService.unitService("你多大了");
+        Log.d("edittext:", editText.getText().toString());
+        chatService.unitService(editText.getText().toString());
 
     }
 

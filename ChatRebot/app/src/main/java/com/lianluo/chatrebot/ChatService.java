@@ -104,8 +104,9 @@ public class ChatService {
                 public void onResponse(Call call, Response response) throws IOException {
                     Gson gson = new Gson();
                     ChatBean bean = gson.fromJson(response.body().string(), ChatBean.class);
-                    Log.d("chatsay",bean.result.action_list.get(0).say);
-                    TTSUtils.getInstance().speak(bean.result.action_list.get(0).say);
+
+                    //Log.d("chatsay",bean.result.action_list.get(0).say);
+                    //TTSUtils.getInstance().speak(bean.result.action_list.get(0).say);
                 }
             });
         } catch (Exception e) {

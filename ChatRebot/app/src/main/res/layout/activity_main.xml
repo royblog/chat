@@ -8,11 +8,11 @@
     android:orientation="vertical">
 
 
-    <TextView
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:hint="点击录音，开始识别的语音文字"
-        android:id="@+id/text"/>
+        android:layout_height="50dp"
+        android:hint="输入文字或者点击录音说话"
+        android:id="@+id/edit_text"/>
 
     <Button
         android:layout_width="match_parent"
