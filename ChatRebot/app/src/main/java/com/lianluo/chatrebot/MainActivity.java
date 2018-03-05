@@ -1,29 +1,24 @@
 package com.lianluo.chatrebot;
 
-import android.content.SharedPreferences;
 import android.os.Environment;
-import android.speech.SpeechRecognizer;
-import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
-import com.iflytek.cloud.SpeechSynthesizer;
-import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecognizerDialog mIatDialog;
-    private SpeechSynthesizer mTts;
     private ChatService chatService;
     EditText editText;
 
@@ -33,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mIatDialog = new RecognizerDialog(MainActivity.this, mInitListener);
-
         mIatDialog.setListener(mRecognizerDialogListener);
         setParam();
 
@@ -46,14 +40,15 @@ public class MainActivity extends AppCompatActivity {
 
         editText = findViewById(R.id.edit_text);
 
-        chatService = new ChatService();
+        //chatService = new ChatService();
     }
 
 
     public void beganRecord(View view) {
+        mIatDialog.show();
 
-        Log.d("edittext:", editText.getText().toString());
-        chatService.unitService(editText.getText().toString());
+        //Log.d("edittext:", editText.getText().toString());
+        //chatService.unitService(editText.getText().toString());
 
     }
 
@@ -71,13 +66,27 @@ public class MainActivity extends AppCompatActivity {
     private RecognizerDialogListener mRecognizerDialogListener = new RecognizerDialogListener() {
         @Override
         public void onResult(RecognizerResult recognizerResult, boolean b) {
-            Log.d("result", "success");
-            chatService.unitService(recognizerResult.getResultString());
+            Log.d("speechresult", "success" + recognizerResult.getResultString());
+
+            //chatService.unitService(recognizerResult.getResultString());
+            Gson gson = new Gson();
+            SpeechBean speechBean = gson.fromJson(recognizerResult.getResultString(), SpeechBean.class);
+            if (speechBean.sn == 1) {
+                //Log.d("speechWord:",speechBean.ws.get(0).cw.get(0).w);
+                Log.d("speechfail","speechfail" + speechBean.sn);
+                Log.d("speechfail", "speechls" + speechBean.ls);
+                Log.d("speechfail","speechbg" + speechBean.bg);
+                Log.d("speechfail","speechws" + speechBean.ws.toArray().length);
+            } else if (speechBean.sn == 2){
+                Log.d("speechfail","speechfail" + speechBean.sn);
+            } else  {
+                Log.d("speechthree","speechthree");
+            }
         }
 
         @Override
         public void onError(SpeechError speechError) {
-            Log.d("result", "error");
+            Log.d("result", "error" + speechError.toString());
         }
     };
 

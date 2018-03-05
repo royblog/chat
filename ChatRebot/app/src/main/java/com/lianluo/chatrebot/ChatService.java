@@ -105,7 +105,6 @@ public class ChatService {
                     Gson gson = new Gson();
                     ChatBean bean = gson.fromJson(response.body().string(), ChatBean.class);
 
-                    //Log.d("chatsay",bean.result.action_list.get(0).say);
                     TTSUtils.getInstance().speak(bean.result.action_list.get(0).say);
                 }
             });
