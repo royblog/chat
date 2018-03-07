@@ -76,7 +76,7 @@ public class ChatService {
         String session_id = (String) SPUtils.get(ContextApplication.getAppContext(),"session_id","");
 
         String unit_url = "https://aip.baidubce.com/rpc/2.0/solution/v1/unit_utterance?access_token=" + access_token;
-        String scene_id = "100";
+        String scene_id = "100";//xianliao
 
         try {
             OkHttpClient client = new OkHttpClient();
