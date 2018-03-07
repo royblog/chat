@@ -1,5 +1,6 @@
 package com.lianluo.chatrebot;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -12,54 +13,76 @@ import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
 /**
- * Created by wangyaoguo on 2018/3/5.
+ * Created by wangyaoguo on 2018/3/7.
+ * 科大讯飞语音听写服务，科大讯飞语音听写有两套API，一套有UI，一套没有UI，暂时使用有UI的API
  */
 
-public class ASRUtils {
+public class ASRService {
+
     private boolean isInitSuccess = false;
     private RecognizerDialog mIatDialog;
-    private volatile static TTSUtils instance = null;
 
-    //构造私有方法，禁止外界访问
-    private ASRUtils() {
+    //构造私有方法，外界不能直接访问
+    private ASRService() {
 
     }
 
     //构造单例
-    public static TTSUtils getInstance() {
+    private volatile static ASRService instance = null;
+    public static ASRService getInstance() {
         if (instance == null) {
-            synchronized (TTSUtils.class) {
+            synchronized (ASRService.class) {
                 if (instance == null) { //二次检测
-                    instance = new TTSUtils();
+                    instance = new ASRService();
                 }
             }
         }
         return instance;
     }
 
-    //开始语音识别
-    public void record() {
-        if (isInitSuccess) {
-            mIatDialog.show();
-        } else  {
-            init();
-            isInitSuccess = true;
-        }
-    }
-
-    public void init() {
-
-        mIatDialog = new RecognizerDialog(ContextApplication.getAppContext(), mInitListener);
+    //初始化
+    public void init(Context ctx) {
+        mIatDialog = new RecognizerDialog(ctx, mInitListener);
         mIatDialog.setListener(mRecognizerDialogListener);
-        if (mIatDialog == null) {
-            Log.d("initDialog", "failed");
-            return;
-        } else {
-            Log.d("initDialog", "success");
-        }
         setParas();
     }
 
+    //开始语音听写
+    public void record(Context context) {
+        if (isInitSuccess == false) {
+            init(context);
+            isInitSuccess = true;
+        }
+        mIatDialog.show();
+    }
+
+    //初始化监听器
+    private InitListener mInitListener = new InitListener() {
+        @Override
+        public void onInit(int i) {
+            if (i != ErrorCode.SUCCESS) {
+                Log.d("initlistener", "failed");
+            } else {
+                Log.d("initlistener", "success");
+            }
+        }
+    };
+
+    //听写监听器
+    private RecognizerDialogListener mRecognizerDialogListener = new RecognizerDialogListener() {
+        @Override
+        public void onResult(RecognizerResult recognizerResult, boolean b) {
+            Log.d("result", "success");
+            //chatService.unitService(recognizerResult.getResultString());
+        }
+
+        @Override
+        public void onError(SpeechError speechError) {
+            Log.d("result", "error");
+        }
+    };
+
+    //设置参数
     public void setParas() {
         //清空参数
         mIatDialog.setParameter(SpeechConstant.PARAMS, null);
@@ -91,29 +114,4 @@ public class ASRUtils {
         //设置音频保存路径，设置路径为sd卡，注意设置权限
         mIatDialog.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory() + "/msc/iat.wav");
     }
-
-    private InitListener mInitListener = new InitListener() {
-        @Override
-        public void onInit(int i) {
-            if (i != ErrorCode.SUCCESS) {
-                Log.d("initlistener", "failed");
-            } else {
-                Log.d("initlistener", "success");
-            }
-        }
-    };
-
-    private RecognizerDialogListener mRecognizerDialogListener = new RecognizerDialogListener() {
-        @Override
-        public void onResult(RecognizerResult recognizerResult, boolean b) {
-            Log.d("result", "success");
-            //chatService.unitService(recognizerResult.getResultString());
-        }
-
-        @Override
-        public void onError(SpeechError speechError) {
-            Log.d("result", "error");
-        }
-    };
-
 }
