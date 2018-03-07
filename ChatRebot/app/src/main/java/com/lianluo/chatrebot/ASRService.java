@@ -83,9 +83,6 @@ public class ASRService {
                     speechResult.append(speechBean.ws.get(i).cw.get(0).w);
                 }
                 EventBus.getDefault().post(speechResult.toString());
-                //ChatService chat =  new ChatService();
-
-                //chat.unitService(speechResult.toString());
             }
         }
 

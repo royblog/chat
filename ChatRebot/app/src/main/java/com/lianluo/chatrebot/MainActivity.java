@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public class MainActivity extends AppCompatActivity {
 
     EditText editText;
+    ChatService chatService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
 
         editText = findViewById(R.id.edit_text);
+        chatService = new ChatService();
     }
 
     @Override
@@ -34,10 +36,9 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void speechResult(String say) {
         Log.d("saysome:",say);
+        chatService.unitService(say);
 
     }
-
-
 
     public void beganRecord(View view) {
         //TTSService.getInstance().speak("科大讯飞TTS");
