@@ -106,7 +106,7 @@ public class ChatService {
                     Gson gson = new Gson();
                     ChatBean bean = gson.fromJson(response.body().string(), ChatBean.class);
                     SPUtils.put(ContextApplication.getAppContext(),"session_id",bean.result.session_id);
-                    //TTSUtils.getInstance().speak(bean.result.action_list.get(0).say);
+                    TTSService.getInstance().speak(bean.result.action_list.get(0).say);
                 }
             });
         } catch (Exception e) {

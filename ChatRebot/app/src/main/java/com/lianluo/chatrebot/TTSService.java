@@ -50,6 +50,9 @@ public class TTSService {
             init();
             isInitSuccess = true;
         }
+        if (mTts.isSpeaking()) {
+            mTts.stopSpeaking();
+        }
         mTts.startSpeaking(msg, mSynthesizerListener);
     }
 

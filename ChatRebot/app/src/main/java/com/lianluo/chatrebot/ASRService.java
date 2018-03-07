@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerResult;
@@ -72,9 +73,18 @@ public class ASRService {
     private RecognizerDialogListener mRecognizerDialogListener = new RecognizerDialogListener() {
         @Override
         public void onResult(RecognizerResult recognizerResult, boolean b) {
-            Log.d("result", "success");
-            //chatService.unitService(recognizerResult.getResultString());
+            Gson gson = new Gson();
+            StringBuffer speechResult = new StringBuffer();
+            SpeechBean speechBean = gson.fromJson(recognizerResult.getResultString(), SpeechBean.class);
+            if (speechBean.sn == 1) {
+                for (int i = 0; i < speechBean.ws.size(); i++) {
+                    speechResult.append(speechBean.ws.get(i).cw.get(0).w);
+                }
+                ChatService chat =  new ChatService();
+                chat.unitService(speechResult.toString());
+            }
         }
+
 
         @Override
         public void onError(SpeechError speechError) {

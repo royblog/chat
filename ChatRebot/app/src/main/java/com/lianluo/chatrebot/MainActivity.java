@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void beganRecord(View view) {
         //TTSService.getInstance().speak("科大讯飞TTS");
-        //ASRService.getInstance().record(MainActivity.this);
+        ASRService.getInstance().record(MainActivity.this);
     }
 
 
