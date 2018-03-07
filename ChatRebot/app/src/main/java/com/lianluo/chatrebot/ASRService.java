@@ -13,6 +13,8 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by wangyaoguo on 2018/3/7.
  * 科大讯飞语音听写服务，科大讯飞语音听写有两套API，一套有UI，一套没有UI，暂时使用有UI的API
@@ -80,8 +82,10 @@ public class ASRService {
                 for (int i = 0; i < speechBean.ws.size(); i++) {
                     speechResult.append(speechBean.ws.get(i).cw.get(0).w);
                 }
-                ChatService chat =  new ChatService();
-                chat.unitService(speechResult.toString());
+                EventBus.getDefault().post(speechResult.toString());
+                //ChatService chat =  new ChatService();
+
+                //chat.unitService(speechResult.toString());
             }
         }
 
